@@ -1,28 +1,24 @@
 function [ Im ] = actuator_inertia
-%Motor inertias generated from NAO
-%http://doc.aldebaran.com/2-1/family/nao_h25/motors_h25_v4.html
-%https://www.portescap.com/sites/default/files/ed_about_brush_dc_motors.pdf
+%Motor inertias for the 2d biped robot
 %Taking into account the rotor inertia and the reudction ratio
 
 %Rotor inertia
-Ir = [3;...q1
-    3;...q2
-    3;...q3
-    3;...q4
-    3;...q5
-    3;...q6
-    3];...q7
+Ir = [1;...q1
+    1;...q2
+    1;...q3
+    1;...q4
+    1;...q5
+    1];...q6
  
 Ir = Ir*1e-7;
 
 %Reduction ratios
-N = [201.3;...q1
-    130.85;...q2
-    130.85;...q3
-    130.85;...q4
-    201.3;...q5
-    201.3;...q6
-    201.3];...q7
+N = [1;...q1
+    1;...q2
+    1;...q3
+    1;...q4
+    1;...q5
+    1];...q6
     
 Im = Ir.*N.^2;
 

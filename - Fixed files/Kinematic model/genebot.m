@@ -2,7 +2,7 @@ function robot = genebot()
 %%Generation of the robot datas
 
 %% Number of joints
-joints = 7;
+joints = 6;
 
 %% ZERO joint positions
 q = zeros(joints,1); 
@@ -13,10 +13,25 @@ qD = zeros(joints,1);
 %% Creating the robot structure
 robot = struct('joints',joints,'q',q,'qD',qD);
 
+%% Robot antecedent and joint list
+robot.ant = [0,... 1
+             1,... 2
+             2,... 3
+             3,... 4
+             4,... 5
+             5,... 6
+             6,... 7
+             7,... 8
+             8,... 9
+             9]; %10  
+robot.act= [0,1,2,3,0,4,5,6,0,0];
+
+%% Geometric direct model: Compute all Transformation matrices w.r.t. frame 0 (at stance foot).
+robot.q = q;
+robot.T = DGM(robot); % At this time this would be "zero position"
+
 %% CONSTANT transformation matrices to convert make all matrices 0Ti be aligned with the world frame (frame 0) at ZERO position
 % ------------------------------------------
-robot.q = q;
-robot.T = DGM(robot);
 Tconst = zeros(4,4,9);
 for i=1:7
     Tconst(:,:,i) = eye(4);
@@ -25,14 +40,13 @@ for i=1:7
 end    
 robot.Tconst = Tconst;
 
-%% Assigning DEFAULT joint positions
-q(1)=0.1;
-q(2)=-0.4;
-q(3)=0.4;
+%% Assigning DEFAULT joint positions (move the robot in a stance position)
+q(1)=0;
+q(2)=0;
+q(3)=0;
 q(4)=0;
-q(5)=-0.4;
-q(6)=0.4;
-q(7)=-0.1;
+q(5)=0;
+q(6)=0;
 %
 % q(1)=0.1;
 % q(2)=0;
@@ -47,35 +61,14 @@ robot.T = DGM(robot); % Modelo geométrico directo (calcula las matrices de trans
                        % y las asigna a la estructura "robot" en la variable T.                       
 
 %% Robot mass information
-PI = Mass_information;
-M = PI.masse;
-robot.mass = sum(M);
-robot.PI = PI;
+% PI = Mass_information;
+% M = PI.masse;
+% robot.mass = sum(M);
+% robot.PI = PI;
+% 
+% [robot.CoM,robot.J_CoM,robot.J_Ankle,robot.crossM,robot.J_CoMs] = compute_com(robot,PI);
+% 
 
-[robot.CoM,robot.J_CoM,robot.J_Ankle,robot.crossM,robot.J_CoMs] = compute_com(robot,PI);
-
-%% Ankle frame (9) to world frame
-robot.foot_f = [  0 1 0 0;
-                  0 0 1 0;
-                  1 0 0 0;
-                  0 0 0 1];
-%% Hip frame (4) to world frame
-robot.torso_f=[0     1   0   0;
-               0     0   1   0;
-               1     0   0   0;
-               0     0   0   1];
-   
-%% Robot antecedent and joint list
-robot.ant = [0,... 1
-             1,... 2
-             2,... 3
-             3,... 4
-             4,... 5
-             4,... 6
-             6,... 7
-             7,... 8
-             8]; %9  
-robot.act= [0,1,2,3,4,5,6,7,0];
 
 end
 

@@ -2,25 +2,22 @@
 %    Editor/Debugger (MATLAB Preferences) > Code Folding and enable "Sections" by checking on it
 function PI = Mass_information
 %% Version of the  18 December 2017
-% Information from .urdf of July 2015
+% Information for dynamic parameters of the robot
 
 %% I.   Masses - Center of Masses - Inertia Tensors
 %  ============================================
 % 
 % The centers of masses positions and the inertial tensors are described
-% relatively to the Aldebaran's local coordinate system of the current 
-% solid (S) (o, R).
+% relatively to the local coordinate system of the current solid (S) (o, R).
 % The inertia tensors are expressed around the mass center. 
-% i.e. ^SI0_i where S is a local fixed frame of Aldebaran and I0 is the
+% i.e. ^SI0_i where S is a local fixed frame of the body and I0 is the
 % inertia tensor
 % 
-% All solids (S) and Aldebaran's local coordinate system are described 
-% relatively to the zero posture: standing with straight legs and arms 
-% pointing forwards).
+% All solids (S) are described 
+% relatively to the zero posture: standing with straight
 % 
 % Masses are expressed in kg
-% Estos valores fueron tomados de la documenacion de aldebaran
-%http://doc.aldebaran.com/2-1/family/robots/masses_robot.html
+
 M = zeros(9,1);
 
 % CoM = [X_G ; Y_G ; Z_G]; kg/m²
@@ -29,100 +26,96 @@ M = zeros(9,1);
 %     I_{yx} , I_{yy} , I_{yz} ;
 %     I_{zx} , I_{zy} , I_{zz}]; kg/m²
 
-%% Trunk
-%      
-%Right Foot    
-% RAnklePitch
-M(1) = 0.17184;
+%% CoMs and Masses   
+% Body: Right Foot    
+% Local cordinate: RFoot Tip
+M(1) = 1;
 
-CoM{1} = [ 0.02542;
-          -0.0033;
-          -0.03239];
+CoM{1} = [ -0.1;
+          0.1;
+         0];
 
-I{1}= [ 0.00026930202148 , 5.87505001921e-06  , 0.00013913327712 ;
-        5.8750501921e-06  , 0.00064347387524  , -1.8849170374e-05 ;
-        0.00013913327712 , -1.884917037e-05  , 0.000525034478946];
+I{1}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
 % ------
-% RKneePitch
-M(2) = 0.30142;
+% Body: Tibia
+% Local cordinate: RAnklePitch 
+M(2) = 1;
 
-CoM{2} = [ 0.00453;
-           -0.00225;
-           -0.04936];
+CoM{2} = [ 0;
+          0.5;
+         0];
 
-I{2}= [ 0.0011828296119 , -8.96500012e-07  , 2.7996900826e-05;
-        -8.96500012e-07  ,  0.0011282785563 , -3.8476038753e-05;
-         2.7996900826e-05  , -3.8476038753e-05  ,0.00019145276747];
-%--------
-% RHipPitch
-M(3) = 0.38968;
-
-CoM{3} = [ 0.00138 ;
-           -0.00221;
-           -0.05373];
-
-I{3}= [ 0.0016374820843 ,  -8.3954000729e-07  , 8.5883009888e-05;
-        -8.3954000729e-07  , 0.0015922139864  , -3.9176258724e-05;
-         8.5883009888e-05 , -3.9176258724e-05  , 0.00030397824594];	
+I{2}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
 % ------
-% Zeros ?
-M(4) = 0;
-CoM{4} = zeros(3,1);
-I{4}= zeros(3,3);
-% --------------------------
-%Torso
-M(5)   = 1.0496;
+% Body: Femur
+% Local cordinate: RKneePitch 
+M(3) = 1;
 
-CoM{5} = [ -0.00413 ;
-            0.0     ;
-            0.04342];
+CoM{3} = [ 0;
+          0.5;
+         0];
 
-I{5}          = [ 0.0050623407587  , 1.4311580344e-05,  0.000155119082081   ;
-                  1.4311580344e-05,  0.0048801358789  , -2.7079340725e-05 ;
-                   0.000155119082081  , -2.7079340725e-05,  0.001610300038  ];
-% -----------------
-% LHipPitch
-M(6) = 0.38968;
+I{3}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
+% ------
+% Body: Trunk
+% Local cordinate: HipPitch 
+M(4) = 1;
 
-CoM{6} = [ 0.00138 ;
-            0.00221;
-           -0.05373];
+CoM{4} = [ 0;
+          0.5;
+         0];
 
-I{6}= [ 0.001636719564  , 9.2451000455e-07  , 8.5306681285e-05;
-         9.2451000455e-07 , 0.001591072767  ,  3.8361598854e-05;
-         8.5306681285e-05 , 3.8361598854e-05 , 0.00030374340713];
-% --------
-% LKneePitch
-M(7) = 0.30142;
+I{4}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
+% ------
+% Body: Left femur
+% Local cordinate: LKneePitch
+M(5) = 1;
 
-CoM{7} = [ 0.00453;
-            0.00225;
-           -0.04936];
+CoM{5} = [ 0;
+          0.5;
+         0];
 
-I{7}= [ 0.0011820796644 , 6.3362000446e-07  , 3.6496971006e-05;
-         6.3362000446e-07  ,  0.0011286522495 , 3.949522943e-05;
-         3.6496971006e-05  , 3.949522943e-05  ,0.00019322744629];
-% ----------
-% LAnklePitch 
-M(8) = 0.13416;
+I{5}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
+% ------
+% Body: Left Tibia
+% Local cordinate: LAnklePitch
+M(6) = 1;
 
-CoM{8} = [ 0.00045 ;
-            0.00029;
-            0.00685];
+CoM{6} = [ 0;
+          0.5;
+         0];
 
-I{8}= [ 3.8509781007e-05 ,-2.6340000403e-08  , 3.8619400584e-06 ;
-        -2.6340000403e-08  , 7.4265262811e-05  , 1.8339999741e-08;
-         3.8619400584e-06  , 1.8339999741e-08  , 5.4865398852e-05];
-%%%%%%%%%%%%%%%%
-M(9) = 0;
-CoM{9} = zeros(3,1);
-I{9}= zeros(3,3);
- %--------------------- virtual frame in the tip of the left foot
+I{6}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
+% ------
+% Body: Right Foot    
+% Local cordinate: LFoot Tip
+M(7) = 1;
+
+CoM{7} = [ -0.1;
+          0.1;
+         0];
+
+I{7}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
+% ------
 
 %////////////////////////////////////////////////////////////////////////
 
 %% III. Transformation matrices w.r.t frame 0 (Tip of the RFoot)
-joints = 7;
+joints = 6;
 q = zeros(joints,1); 
 qD = zeros(joints,1);
 robot = struct('joints',joints,'q',q,'qD',qD);
