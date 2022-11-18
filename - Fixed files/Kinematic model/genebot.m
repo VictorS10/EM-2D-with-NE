@@ -41,23 +41,15 @@ end
 robot.Tconst = Tconst;
 
 %% Assigning DEFAULT joint positions (move the robot in a stance position)
-q(1)=0;
-q(2)=0;
-q(3)=0;
-q(4)=0;
-q(5)=0;
-q(6)=0;
-%
-% q(1)=0.1;
-% q(2)=0;
-% q(3)=0;
-% q(4)=0;
-% q(5)=0;
-% q(6)=0;
-% q(7)=0;
+q(1) = deg2rad(-15);
+q(2) = deg2rad(30);
+q(3) = deg2rad(-15);
+q(4) = deg2rad(15);
+q(5) = deg2rad(-30);
+q(6) = deg2rad(15);
 
 robot.q = q;
-robot.T = DGM(robot); % Modelo geométrico directo (calcula las matrices de transformación elementales del robot),
+robot.T = DGM(robot); % Modelo geomï¿½trico directo (calcula las matrices de transformaciï¿½n elementales del robot),
                        % y las asigna a la estructura "robot" en la variable T.                       
 
 %% Robot mass information

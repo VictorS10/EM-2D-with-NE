@@ -67,7 +67,7 @@ robot_draw_2D(robot,x0)             % Supported on the right foot
 
 q(1) = deg2rad(-15);
 q(2) = deg2rad(25);
-q(3) = deg2rad(-20);
+q(3) = deg2rad(0);
 q(4) = deg2rad(30);
 q(5) = deg2rad(-10);
 q(6) = deg2rad(-25);
