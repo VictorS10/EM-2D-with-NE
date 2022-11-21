@@ -52,22 +52,27 @@ robot = genebot(); % The robot structure is created
 % Support foot position
 x0 = 0; 
 figure(1)
-robot_draw_2D(robot,x0)             % Supported on the right foot
+robot_draw_2D(robot,x0,true)             % Supported on the right foot
 % robot_draw_reverse(robot,x0,y0)     %  Supported on the left foot
 % axis equal % In order to see all the axis with the same scale, thus the image of the robot will not be "deformed"
 
 % Also, by using HEMERO pachage we can visualize each frame of the robot by using 
 % if we don't have this package simply comment this lines
 % hold on
-% for i=1:9
-%     frame(robot.T(:,:,i),'c',.05,0)
-% end
+% Rotate all frames to plot it in MATLAB
+T_matlab = [1 0 0 0;
+            0 0 -1 0;
+            0 1 0 0;
+            0 0 0 1];
+for i=1:10
+    frame(T_matlab*robot.T(:,:,i),'c',.05,0)
+end
 % view(3) % to assigne a "standard" view in 3D
 % axis equal 
 
 q(1) = deg2rad(-15);
 q(2) = deg2rad(25);
-q(3) = deg2rad(0);
+q(3) = deg2rad(-20);
 q(4) = deg2rad(30);
 q(5) = deg2rad(-10);
 q(6) = deg2rad(-25);

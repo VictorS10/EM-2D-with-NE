@@ -1,5 +1,5 @@
 %global robot
-function robot=robot_move(robot,q)
+function robot = robot_move(robot,q)
 %New joints configuration of the robot
 robot.q = q;
 robot.T = DGM(robot);

@@ -172,10 +172,9 @@ I{10}= [0, 0, 0;
 %////////////////////////////////////////////////////////////////////////
 
 %% III. Transformation matrices w.r.t frame 0 (Tip of the RFoot)
-robot.q = zeros(robot.joints,1);
+robot.q = zeros(joints,1);
 robot.T = DGM(robot);
-T0 = robot.T;
-
+  
 %% IV.  Calculation of I. in M-DH frames
 
 % Base change I_j = inv(P_j) I_j_s P_j
@@ -193,7 +192,7 @@ T0 = robot.T;
 % d_zg = d_z - d_z_0
 
 % % Rotation matrices 
-P = cell(1,nFrames);
+P = cell(1,9);
 for i = 1:nFrames
 	P{i} = inv(T0(1:3,1:3,i));  % P = jR0
 end
@@ -204,16 +203,16 @@ end
 % In this case, all the origins of CoM vectors coincide with the DH frames, so there's no need to
 % traslate them.
 vec_C = cell(1,nFrames);
-for i = 1:nFrames
+for i = 1:9
     vec_C{i} = [0;0;0];
 end
 
-% Now we refered all CoM vectors and Inercia tensors w.r.t. the DH-Frames
+% Now we refered all CoM vectors and Inercia tensors w.r.t. the DH-Fa
 for i = 1 : nFrames
     C = vec_C{i}; %vec_C contains the traslation vectors of the reference frames;
     inter = CoM{i};
     tmp=[inter(1)-C(1);inter(2)-C(2);inter(3)-C(3)];
-    CoM{i} = P{i}*tmp; % Computation of the position of the CoM, w.r.t. the DH reference frames
+    CoM{i} = P{i}*tmp; % calcul de la position du centre de masse dans les bon repère de référence 
 
     Y = [tmp(2)^2+tmp(3)^2,-tmp(1)*tmp(2),-tmp(1)*tmp(3);
      -tmp(1)*tmp(2),tmp(3)^2+tmp(1)^2,-tmp(2)*tmp(3);
@@ -240,21 +239,25 @@ if ~isempty(alphaM)
     end
     
     MassTorso = 0;
-    for i = 1:nFrames
+    for i = 1:9
         I{i} = alphaM*I{i};
         MassTorso = MassTorso + (1-alphaM)*M(i);
         M(i) = alphaM*M(i);
     end
     
-    % % Assignment of the masss to the frame 5 (Torso),
-    M(5)= M(5) + MassTorso;% Remaining of the mass asigned to frame 5
-    % If less than 20% of the mass is concentrated in the frame 5 the same CoM position (of frame 5) will be used, but...
+    % % Assignment of the masss to the frame 15 (hip),
+    M(7)= M(7) + MassTorso;% Rest of the mass asigned to frame 15
+    % If less than 20% of the mass is concentrated in the frame 15 the same CoM position (of frame 15) will be used, but...
     if alphaM < 0.75
-        CoM{5} = [d3; 0; 0]; % we change the CoM position of frame 15 if more than 20% of the mass are concentred in this frame...
+        CoM{7} = [0; -.05; -.15]; % we change the CoM position of frame 15 if more than 20% of the mass are concentred in this frame...
     end
 end
 % % ==============================================================================================
 PI.masse = M;
+%Para pruebas con jacobianos
+% for i=1:27
+%     CoM{i}=zeros(3,1);
+% end
 PI.CoM = CoM; % ^jCoM, it is the CoM of link j w.r.t. frame j
 PI.I = I; %  ^jIj i.e. is the inertia tensor of link j, located in the origin of frame j
 

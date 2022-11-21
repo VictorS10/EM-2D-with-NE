@@ -1,15 +1,15 @@
 function T = DGM(robot)
 %% computing of the geometric model (transformations matrix) of the robot
-nFrames = 10; % 6 for each joint, and + 4, tip foot 1, Torso, tip and sole foot 2
+nFrames = robot.geometric_params.nFrames;
 T=zeros(4,4,nFrames); 
-d1 = 0.2; % horizontal distance from the foot sole (below the ankle) to its tip
-d2 = 0.1;   % vertical distance from the foot sole (below the ankle) to its ankle
-dd = sqrt(d1^2 + d2^2);
-dAngle = atan2(d2,d1);
-l1 = 1; % Lenght of the tibia
-l2 = 1; % Lenght of the femur
-d3 = 1; %length of torso
-d4 = 0.3; % horizontal length of the hip
+d1 = robot.geometric_params.d1; % horizontal distance from the foot sole (below the ankle) to its tip
+d2 = robot.geometric_params.d2; % vertical distance from the foot sole (below the ankle) to its ankle
+dd = robot.geometric_params.dd; % diagonal distance fromm foot tip to the ankle
+dAngle = robot.geometric_params.dAngle;
+l1 = robot.geometric_params.l1; % Lenght of the tibia
+l2 = robot.geometric_params.l2; % Lenght of the femur
+d3 = robot.geometric_params.d3; %length of torso
+d4 = robot.geometric_params.d4; % horizontal length of the hip
 
 % Description of the robot structure
 % ------------------------------------
