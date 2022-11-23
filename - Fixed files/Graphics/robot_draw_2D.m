@@ -39,6 +39,7 @@ for i=1:10
      T(1:3,4,i) = T(1:3,4,i) + [x0;0;0];
     T(:,:,i) = T_matlab*T(:,:,i);
 end
+% Now T has the direction for plotting in matlab JUST IN THIS FILE
 
 rFoot = T(1:3,4,1);
 rAnkle = T(1:3,4,2);
@@ -51,6 +52,18 @@ lAnkle = T(1:3,4,8);
 lFoot = T(1:3,4,9);
 lSole = T(1:3,4,10);
 
+nMasses = length(find(robot.PI.mass)); %bumber of masses of the robot
+mass = robot.PI.mass;
+CoM_j = robot.PI.CoM;
+CoM_Matlab = zeros(3,nMasses);
+nFrames = robot.nFrames;
+i=1;
+for j=1:nFrames
+    if mass(j)
+        CoM_Matlab(:,i) = T(1:3,:,j) * [CoM_j{j};1]; % This is the vector position of CoM_j w.r.t. frame 0
+        i=i+1;
+    end
+end
 
 % Plot
 hold on
@@ -74,6 +87,14 @@ plot3([lKnee(1) lAnkle(1)],[lKnee(2) lAnkle(2)],[lKnee(3) lAnkle(3)],'r-o','Line
 plot3([lAnkle(1) lFoot(1)],[lAnkle(2) lFoot(2)],[lAnkle(3) lFoot(3)],'r','LineWidth',4)
 plot3([lAnkle(1) lSole(1)],[lAnkle(2) lSole(2)],[lAnkle(3) lSole(3)],'r','LineWidth',4)
 plot3([lSole(1) lFoot(1)],[lSole(2) lFoot(2)],[lSole(3) lFoot(3)],'r','LineWidth',4)
+
+% Plot CoM of each link
+for i=1:nMasses
+    plot3(CoM_Matlab(1,i),CoM_Matlab(2,i),CoM_Matlab(3,i),'bo','LineWidth',4)
+end
+% Plot CoM of the whole body
+CoM_Body_Matlab=T_matlab(1:3,1:3)*(robot.CoM + [x0;0;0]);
+plot3(CoM_Body_Matlab(1),CoM_Body_Matlab(2),CoM_Body_Matlab(3),'co','LineWidth',6)
 
 
 if frames

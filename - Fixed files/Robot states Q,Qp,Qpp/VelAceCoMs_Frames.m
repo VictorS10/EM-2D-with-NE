@@ -5,41 +5,38 @@ function [Vel_CoM, Vel_CoMs, Ace_CoM, Ace_CoMs, AceFrame_i] = VelAceCoMs_Frames(
                           % como producto matricial.
 ant = robot.ant; % Marcos antecedentes
 act = robot.act;  % Articulaciones actuadas en cada marco
-M = robot.PI.masse; % Masas adjuntas a cada marco
+nFrames = robot.nFrames;
+M = robot.PI.mass; % Masas adjuntas a cada marco
 T = robot.T;
 CoM_j = robot.PI.CoM;
 qp = robot.qD;
-for i=1:7
-    qp(i)=0.2;
-end
+
 % Marcos antecedentes al marco Actual:
 % -------------------------------------------------
-% numMarco   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
-% ant    = [ 0,1,2,3,4,5,6,7,8, 9,10,11,12,13, 7,15,16,17,18,19,15,21,22,23,24,25,26,27,15,29,30,31,32,33,34,35];
+% numMarco   1 2 3 4 5 6 7 8 9 10 
+% ant    = [ 0,1,2,3,4,5,6,7,8, 9];
 % Marcos actuados, se pone cero si no es actuado y se pune un numero consecutivo para definir el numero de articulación:
 % --------------------------------------------------------------------------------------------------------------------------
-% numMarco   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
-% act    = [ 0,1,2,3,4,5,6,7,8, 9,10,11,12, 0,13,14,15,16,17, 0,18,19,20,21,22,23,24, 0,25,26,27,28,29,30,31,0];
+% numMarco   1 2 3 4 5 6 7 8 9 10 
+% act    = [ 0,1,2,3,0,4,5,6,0,0];
 % Observando la info anterior podemos agrupar los MARCOS que tienen ARTICULACION
 % --------------------------------------------------------------------------------------------------------------------------
-% i = 1 2 3 4 5 6 7 8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-% Fr = [2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,21,22,23,24,25,26,27,29,30,31,32,33,34,35];
-% Estos Marcos son los que se utilizan para calcular las Jacobianas
-% Así, en lugar del codigo que utiliza Damien para calcular las J_CoMs podríamos calcularlas usando un código más simple...
-% =)  ... en realidad es casi igual ¬¬ jaja.. sólo es un poco más claro la formación por columnas de la matriz Jacobiana
+% i = 1 2 3 4 5 6
+% Fr = [2,3,4,6,7,8,];
+% Estos Marcos son los que se utilizan para calcular las Jacobianas (only the ones that have joints/actuarors)
 
-P = cell(1,9);   % Posicion del marco i desde i-1
-Wi_1 = cell(1,9);  % Velocidad angular del marco i-1 Siempre respecto al marco i-1
-Vi_1 = cell(1,9);  % Velocidad lineal del marco i-1 Siempre respecto al marco i-1
-WPi_1 = cell(1,9);  % Aceleracion angular del marco i-1 Siempre respecto al marco i-1
-VPi_1 = cell(1,9);   % Aceleracion lineal del marco i-1 Siempre respecto al marco i-1
-Wi = cell(1,9);  % Velocidad angular del marco i 
-Vi = cell(1,9);  % Velocidad lineal del marco i 
-V_Gi = cell(1,9);  % Velocidad lineal del CoM unido al marco i 
-WPi = cell(1,9);  % Aceleracion angular del marco i
-VPi = cell(1,9);   % Aceleracion lineal del marco i 
-Vp_Gi = cell(1,9);  % Aceleración lineal del CoM unido al marco i 
-AceFrame_i = cell(1,9);  % Aceleración (lineal y angular) del Marco i 
+P = cell(1,nFrames);   % Posicion del marco i desde i-1
+Wi_1 = cell(1,nFrames);  % Velocidad angular del marco i-1 Siempre respecto al marco i-1
+Vi_1 = cell(1,nFrames);  % Velocidad lineal del marco i-1 Siempre respecto al marco i-1
+WPi_1 = cell(1,nFrames);  % Aceleracion angular del marco i-1 Siempre respecto al marco i-1
+VPi_1 = cell(1,nFrames);   % Aceleracion lineal del marco i-1 Siempre respecto al marco i-1
+Wi = cell(1,nFrames);  % Velocidad angular del marco i 
+Vi = cell(1,nFrames);  % Velocidad lineal del marco i 
+V_Gi = cell(1,nFrames);  % Velocidad lineal del CoM unido al marco i 
+WPi = cell(1,nFrames);  % Aceleracion angular del marco i
+VPi = cell(1,nFrames);   % Aceleracion lineal del marco i 
+Vp_Gi = cell(1,nFrames);  % Aceleración lineal del CoM unido al marco i 
+AceFrame_i = cell(1,nFrames);  % Aceleración (lineal y angular) del Marco i 
 
 % Inicialización
 P{1} = T(1:3,4,1);
@@ -48,14 +45,14 @@ Vi_1{1} = [0;0;0];
 WPi_1{1} = [0;0;0];
 VPi_1{1} = [0;0;0];
 
-Vel_CoMs = cell(1,9);  % Velocidad lineal de los CoMs unido al marco i respecto al marco 0
+Vel_CoMs = cell(1,nFrames);  % Velocidad lineal de los CoMs unido al marco i respecto al marco 0
 Vel_CoMs{1} = [0;0;0];
 Vel_CoM = [0;0;0];
-Ace_CoMs = cell(1,9);  % Velocidad lineal de los CoMs unido al marco i respecto al marco 0
+Ace_CoMs = cell(1,nFrames);  % Velocidad lineal de los CoMs unido al marco i respecto al marco 0
 Ace_CoMs{1} = [0;0;0];
 Ace_CoM = [0;0;0];
 cont = 1;
-for i = 2 : 9  % Se empieza desde el marco 2 ya que no existe actuador en el primer marco 
+for i = 2 : nFrames  % Se empieza desde el marco 2 ya que no existe actuador en el primer marco 
     % IMPORTANT: Note that "ant(i)" is the previous frame of "i". So in a serial chain "ant(i) = i-1", however in a three
     %      chain we must use "ant(i)" because in a new branch we need to re-take ITS previos frame, for example in our robot
     %       the previous frame of 15 is 7 (not 14)... However in order to make some explanations clearer "i-1" was used =P
@@ -72,8 +69,8 @@ for i = 2 : 9  % Se empieza desde el marco 2 ya que no existe actuador en el pri
     iR0 = inv(T(1:3,1:3,i));
     ai = iR0*T(1:3,3,i); % ^ia = ^iR_0 ^0a
     P_Gi = CoM_j{i}; 
-    % if M(i) == 0   % Ya que NO existe actuador en los marcos que NO tienen asignada una massa. 
-    if act(i) == 0    
+    % if M(i) == 0   % It is asigned the same velocity that the past frame
+    if act(i) == 0 % Ya que NO existe actuador en los marcos que NO tienen asignada una massa.    
         Wi{i} = Wi{ant(i)};
         Vi{i} = Vi{ant(i)}; 
         V_Gi{i} = [0;0;0];
@@ -96,13 +93,13 @@ for i = 2 : 9  % Se empieza desde el marco 2 ya que no existe actuador en el pri
     WPi_1{i} = WPi{i};  % ^{i-1}wp_{i-1}
     VPi_1{i} = VPi{i};  % ^{i-1}vp_{i-1}
     % ---------------------
-    Vel_CoMs{i} = T(1:3,1:4,i)*[V_Gi{i};0];  % ^0v_G = ^0T_i*^iv_G
+    Vel_CoMs{i} = T(1:3,:,i)*[V_Gi{i};1];  % ^0v_G = ^0T_i*^iv_G CREO QUE AQUI DEBE SER 1 (ya lo cambié)
     Vel_CoM = Vel_CoM +  M(i)*Vel_CoMs{i};
-    Ace_CoMs{i} = T(1:3,1:4,i)*[Vp_Gi{i};0];  % ^0vp_G = ^0T_i*^ivp_G
+    Ace_CoMs{i} = T(1:3,:,i)*[Vp_Gi{i};1];  % ^0vp_G = ^0T_i*^ivp_G  CREO QUE AQUI DEBE SER 1
     Ace_CoM = Ace_CoM +  M(i)*Ace_CoMs{i};
     % Formamos el vector de aceleraciones (linear y angular) de cada uno de los Marcos de referencia
-    Ace_i = T(1:3,1:4,i)*[VPi{i};0];  % ^0vp_i = ^0T_i*^ivp_i
-    WP_i = T(1:3,1:4,i)*[WPi{i};0];   % ^0wp_i = ^0T_i*^iwp_i
+    Ace_i = T(1:3,:,i)*[VPi{i};1];  % ^0vp_i = ^0T_i*^ivp_i  CREO QUE AQUI DEBE SER 1
+    WP_i = T(1:3,:,i)*[WPi{i};1];   % ^0wp_i = ^0T_i*^iwp_i  CREO QUE AQUI DEBE SER 1
     AceFrame_i{i} = [Ace_i; WP_i];
 end
 

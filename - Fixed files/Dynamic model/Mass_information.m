@@ -6,7 +6,7 @@ function PI = Mass_information(robot)
 
 %% I.   Masses - Center of Masses - Inertia Tensors
 %  ============================================
-nFrames = robot.geometric_params.nFrames;
+nFrames = robot.nFrames;
 d1 = robot.geometric_params.d1; % horizontal distance from the foot sole (below the ankle) to its tip
 d2 = robot.geometric_params.d2; % vertical distance from the foot sole (below the ankle) to its ankle
 l1 = robot.geometric_params.l1; % Lenght of the tibia
@@ -107,48 +107,48 @@ I{5}= [1, 0, 0;
        0, 1, 0;
        0, 0, 1];
 % ------
-% Body: NO BODY (asigned to left hip)
+% Body: Left femur (asigned to left hip)
 % Local frame at: Lhip 
-M(6) = 0;
+M(6) = 1;
 
 CoM{6} = [ 0;
-          0;
+          -l2/2;
          0];
 
-I{6}= [0, 0, 0;
-       0, 0, 0;
-       0, 0, 0];
+I{6}= [1, 0, 0;
+       0, 1, 0;
+       0, 0, 1];
 % ------
 
-% Body: Left femur
+% Body: Left Tibia 
 % Local cordinate: LKnee
 M(7) = 1;
 
 CoM{7} = [ 0;
-          l2/2;
+          -l1/2;
          0];
 
 I{7}= [1, 0, 0;
        0, 1, 0;
        0, 0, 1];
 % ------
-% Body: Left Tibia
+% Body: NO BODY (it is easier to define the CoM of the foot from other frame attached to it)
 % Local cordinate: LAnkle
-M(8) = 1;
+M(8) = 0;
 
 CoM{8} = [ 0;
-          l1/2;
+          0;
          0];
 
-I{8}= [1, 0, 0;
-       0, 1, 0;
-       0, 0, 1];
+I{8}= [0, 0, 0;
+       0, 0, 0;
+       0, 0, 0];
 % ------
 % Body: Right Foot    
 % Local cordinate: LFoot Tip
 M(9) = 1;
 
-CoM{9} = [ -d1;
+CoM{9} = [ -d1/2;
           d2/2;
          0];
 
@@ -254,7 +254,7 @@ if ~isempty(alphaM)
     end
 end
 % % ==============================================================================================
-PI.masse = M;
+PI.mass = M;
 PI.CoM = CoM; % ^jCoM, it is the CoM of link j w.r.t. frame j
 PI.I = I; %  ^jIj i.e. is the inertia tensor of link j, located in the origin of frame j
 

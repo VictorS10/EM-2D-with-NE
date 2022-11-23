@@ -1,6 +1,6 @@
 function T = DGM(robot)
 %% computing of the geometric model (transformations matrix) of the robot
-nFrames = robot.geometric_params.nFrames;
+nFrames = robot.nFrames;
 T=zeros(4,4,nFrames); 
 d1 = robot.geometric_params.d1; % horizontal distance from the foot sole (below the ankle) to its tip
 d2 = robot.geometric_params.d2; % vertical distance from the foot sole (below the ankle) to its ankle

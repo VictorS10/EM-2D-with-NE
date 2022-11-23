@@ -73,16 +73,18 @@ end
 q(1) = deg2rad(-15);
 q(2) = deg2rad(25);
 q(3) = deg2rad(-20);
-q(4) = deg2rad(30);
-q(5) = deg2rad(-10);
-q(6) = deg2rad(-25);
+q(4) = deg2rad(90);
+q(5) = deg2rad(-30);
+q(6) = deg2rad(-50);
 
-robot.q = q;
-robot.T = DGM(robot); 
+robot = robot_move(robot,q); 
 
 figure(1)
 robot_draw_2D(robot,5)
 view(0,0)
+
+
+[L,LD] = angular_momentum(robot);
 
 % Checking states of the robot
 [Qfig1, Qpfig1] = current_states(robot);

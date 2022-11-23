@@ -15,7 +15,7 @@ robot = struct('joints',joints,'q',q,'qD',qD);
 
 %% Robot geometric params
 
-geometric_params.nFrames = 10; % 6 for each joint, and + 4, tip foot 1, Torso, tip and sole foot 2
+robot.nFrames = 10; % 6 for each joint, and + 4, tip foot 1, Torso, tip and sole foot 2
 geometric_params.d1 = 0.2; % horizontal distance from the foot sole (below the ankle) to its tip
 geometric_params.d2 = 0.1;   % vertical distance from the foot sole (below the ankle) to its ankle
 geometric_params.dd = sqrt(geometric_params.d1^2 + geometric_params.d2^2);
@@ -48,32 +48,34 @@ robot.T = DGM(robot); % At this time this would be "zero position"
 
 %% CONSTANT transformation matrices to convert all matrices 0Ti be aligned with the world frame (frame 0) at ZERO position
 % ------------------------------------------
-Tconst = zeros(4,4,9);
+Tconst = zeros(4,4,robot.nFrames);
 for i=1:7
     Tconst(:,:,i) = eye(4);
     R = robot.T(1:3,1:3,i);
     Tconst(1:3,1:3,i) = R';
 end    
 robot.Tconst = Tconst;
+                 
+% %% Assigning DEFAULT joint positions (move the robot in a stance position)
+% q(1) = deg2rad(-15);
+% q(2) = deg2rad(30);
+% q(3) = deg2rad(-15);
+% q(4) = deg2rad(15);
+% q(5) = deg2rad(-30);
+% q(6) = deg2rad(15);
+% 
+% robot.q = q;
+% robot.T = DGM(robot); % We set some initial stand pose for the robot  
 
-%% Assigning DEFAULT joint positions (move the robot in a stance position)
-q(1) = deg2rad(-15);
-q(2) = deg2rad(30);
-q(3) = deg2rad(-15);
-q(4) = deg2rad(15);
-q(5) = deg2rad(-30);
-q(6) = deg2rad(15);
-
-robot.q = q;
-robot.T = DGM(robot); % We set some initial stand pose for the robot                       
 
 %% Robot mass information
 PI = Mass_information(robot);
-M = PI.masse;
+M = PI.mass;
 robot.mass = sum(M);
 robot.PI = PI;
 
-% [robot.CoM,robot.J_CoM,robot.J_Ankle,robot.crossM,robot.J_CoMs] = compute_com(robot,PI);
+[robot.CoM,robot.J_CoM,robot.J_Ankle,robot.crossM,robot.J_CoMs] = compute_com(robot,PI);
+
 
 
 
