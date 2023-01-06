@@ -35,4 +35,4 @@ L = sum(L_j,2);
 LD = sum(LD_j,2);
 
 
-Reference frames must be around the CoM
+% Reference frames must be around the CoM

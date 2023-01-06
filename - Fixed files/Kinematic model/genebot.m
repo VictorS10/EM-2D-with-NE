@@ -49,7 +49,7 @@ robot.T = DGM(robot); % At this time this would be "zero position"
 %% CONSTANT transformation matrices to convert all matrices 0Ti be aligned with the world frame (frame 0) at ZERO position
 % ------------------------------------------
 Tconst = zeros(4,4,robot.nFrames);
-for i=1:7
+for i=1:robot.nFrames
     Tconst(:,:,i) = eye(4);
     R = robot.T(1:3,1:3,i);
     Tconst(1:3,1:3,i) = R';
